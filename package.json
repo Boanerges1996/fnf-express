@@ -1,7 +1,7 @@
 {
   "name": "fnf-express",
   "version": "1.0.0",
-  "description": "",
+  "description": "fnf-express - short form of Fast and furious express. This helps makes the development of express faster by building boiler plate code",
   "main": "src/index.js",
   "bin": {
     "fnf-express": "bin/create-fast",
@@ -17,10 +17,12 @@
     "fnf-express",
     "cli"
   ],
-  "author": {
-    "name": "Samson Kwaku Nkrumah",
-    "email": "samsonnkrumah253@gmail.com",
-    "url": "https://boanerge.me"
+  "contributors": [
+    "Samson Kwaku Nkrumah <samsonnkrumah253@gmail.com> (https://boanerge.com)"
+  ],
+  "author": "Samson Kwaku Nkrumah (https://github.com/Boanerges1996)",
+  "bugs": {
+    "url": "https://github.com/Boanerges1996$$/fnf-express/issues"
   },
   "license": "ISC",
   "dependencies": {
