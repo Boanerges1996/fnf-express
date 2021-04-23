@@ -5,33 +5,33 @@ const createIndexJSFile = async (view) => {
   await fs.writeFileSync(
     "index.js",
     `const express = require("express");
-    \nconst logger = require("morgan");
-    \nconst mongoose = require("mongoose");
-    \nconst cors = require("cors");
-    \nconst hpp = require("hpp");
-    \nconst path = require("path");
-    \nconst dotenv = require("dotenv");
-    \n\n
+  const logger = require("morgan");
+  const mongoose = require("mongoose");
+  const cors = require("cors");
+  const hpp = require("hpp");
+  const path = require("path");
+  const dotenv = require("dotenv");
+  \n
 
-    \ndotenv.config();
-    \n
-    \nconst app = express();
+  \ndotenv.config();
+  \n
+  const app = express();
 
-    \n// Middlewares
-    \napp.use(cors());
-    \napp.use(express.json());
-    \napp.use(hpp());
-    \napp.use(logger("dev"));
-    \napp.use(express.static(path.join(__dirname, "public")));
+  // Middlewares
+  app.use(cors());
+  app.use(express.json());
+  app.use(hpp());
+  app.use(logger("dev"));
+  app.use(express.static(path.join(__dirname, "public")));
 
-    \n\n
-    app.set("view engine", ${view});\n
-    app.set("views", path.join(__dirname, "views"));
-    \n\n\n
-    \nconst port = process.env.PORT || 3000;
-    \nlet  server = app.listen(port, () => {
-        console.log('Server started running');
-      });
+  \n\n
+  app.set("view engine", ${view});
+  app.set("views", path.join(__dirname, "views"));
+  \n\n
+  const port = process.env.PORT || 3000;
+  let  server = app.listen(port, () => {
+    console.log('Server started running');
+  });
     `
   );
 };

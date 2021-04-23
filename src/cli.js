@@ -32,6 +32,9 @@ import { promisify } from "util";
 
 import ncp from "ncp";
 import fs, { readFileSync, writeFileSync } from "fs";
+import { Spinner } from "cli-spinner";
+import { helpFunction } from "./functions/help";
+import { installAndCreateDB } from "./functions/database";
 const access = promisify(fs.access);
 const copy = promisify(ncp);
 
@@ -51,6 +54,9 @@ function parseArgumentsIntoOptions(rawArgs) {
       "--ctr": String,
       "--routes": String,
       "--views": String,
+      "--help": Boolean,
+      "--mfile": String, // For creating modelFile in  MongoDB
+      "-mf": "--mfile", // For creating modelFile in  MongoDB
       "-g": "--git",
       "-y": "--yes",
       "-i": "--install",
@@ -60,6 +66,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       "-c": "--ctr",
       "-r": "--routes",
       "-v": "--views",
+      "-h": "--help",
     },
     {
       argv: rawArgs.slice(2),
@@ -75,6 +82,8 @@ function parseArgumentsIntoOptions(rawArgs) {
     models: args["--models"],
     controllers: args["--ctr"],
     routes: args["--routes"],
+    help: args["--help"] || false,
+    mfile: args["--mfile"],
   };
 }
 
@@ -110,6 +119,12 @@ async function promptForMissingOptions(options) {
     await runNpmInit();
   }
 
+  // If user enters project name
+  if (options.name) {
+    await createRootFolderAndChangePath(options.name);
+    await runNpmInit();
+  }
+
   // DATABASE
   if (!options.db) {
     const db = await inquirer.prompt([
@@ -125,12 +140,11 @@ async function promptForMissingOptions(options) {
     // Ask models if DB is called MongoDB
     if (db.database === "MongoDB") {
       // Install MONGOOSE
-      const spiner = ora("Installing mongoose...").start();
-      spiner.color = "yellow";
-      spiner.text = "You selected mongooDB";
+      const spiner = ora();
+      spiner.start("installing mongodb as selected database...");
       await installMongoose();
-
       spiner.stop();
+      spiner.succeed();
       // Inputing various mongoDB models in the Project
 
       // 1. Create Model Folders and CD into IT
@@ -162,6 +176,10 @@ async function promptForMissingOptions(options) {
 
       options.models = models.models;
     }
+  }
+
+  if (options.database) {
+    await installAndCreateDB(options);
   }
 
   // CONTROLLERS
@@ -313,23 +331,28 @@ async function promptForMissingOptions(options) {
 
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
-  options = await promptForMissingOptions(options);
-  //   if (options.git) {
-  //     const answer = await inquirer.prompt([
-  //       {
-  //         type: "string",
-  //         name: "gitUrl",
-  //         message: "Enter git url: ",
-  //         default: "",
-  //       },
-  //     ]);
-  //     console.log(answer);
-  //   }
+  console.log(options);
+
+  // The HELP Option is selected
+  if (options.help) {
+    helpFunction();
+    return;
+  } else {
+    if (options.mfile) {
+      // For creating model file in model folder
+      createModelFolderAndCD().then(() => {
+        createModelFileGivenName(options.mfile);
+      });
+      return;
+    }
+    // if help is not selected
+    else {
+      options = await promptForMissingOptions(options);
+    }
+  }
+
+  // options = await promptForMissingOptions(options);
   console.log(options);
   //   await createProject(options);
   //   await createtemplates(options);
 }
-
-// export function cli(args) {
-//   console.log(args);
-// }
