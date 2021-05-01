@@ -1,6 +1,6 @@
 {
   "name": "fnf-express",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "fnf-express - short form of Fast and furious express. This helps makes the development of express faster by building boiler plate code",
   "main": "src/index.js",
   "bin": {
