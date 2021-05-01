@@ -39,6 +39,7 @@ import {
   createConnectionsFolderAndCD,
   createConnectionFile,
 } from "./functions/connections";
+import chalk from "chalk";
 const access = promisify(fs.access);
 const copy = promisify(ncp);
 
@@ -111,6 +112,7 @@ async function promptForMissingOptions(options) {
         },
       ]);
       projectName = name.name;
+      options.name = name.name;
     }
 
     // Await creation of Project name installing of packages
@@ -333,7 +335,7 @@ async function promptForMissingOptions(options) {
 
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
-  console.log(options);
+  // console.log(options);
 
   // The HELP Option is selected
   if (options.help) {
@@ -366,6 +368,15 @@ export async function cli(args) {
     // if help is not selected
     else {
       options = await promptForMissingOptions(options);
+      // Show completion message
+
+      console.log(
+        "CD into your project(",
+        chalk.red(`${options.name}`),
+        ") and enjoy fnf-express",
+        chalk.blue("(Fast and furious express)")
+      );
+      console.log(chalk.yellow(`cd ${options.name} && npm start`));
     }
   }
 
