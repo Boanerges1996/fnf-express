@@ -13,12 +13,12 @@ const createIndexJSFile = async (view) => {
   const dotenv = require("dotenv"); \
   \n \
   // Database importation\n \
-  const dbServer = require("./connection/connections");\
+  const dbServer = require("./connections/connections");\
  \n \
   \ndotenv.config(); \
   \n\n \
   const app = express();\n \
-  dbServer.connectDB(); \
+  dbServer.connectDB();\n \
 \
   // Middlewares \
   \napp.use(cors()); \

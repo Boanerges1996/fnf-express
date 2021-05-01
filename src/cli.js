@@ -114,7 +114,7 @@ async function promptForMissingOptions(options) {
       projectName = name.name;
       options.name = name.name;
     }
-
+    options.name = name.name;
     // Await creation of Project name installing of packages
     await createRootFolderAndChangePath(name.name);
     await runNpmInit();
