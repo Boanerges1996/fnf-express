@@ -19,7 +19,7 @@ const createModelFolderAndCD = async () => {
 const createModelFileGivenName = async (modelName) => {
   await fs.writeFileSync(
     modelName + ".js",
-    `const mongoose = require("mongoose"); \nconst dotenv = require("dotenv"); \n\nconst ${modelName}Schema = new mongoose.Schema({}) \n\n\n\nmodule.exports = mongoose.model(${modelName}, ${modelName}Schema);`
+    `const mongoose = require("mongoose"); \nconst dotenv = require("dotenv"); \ndotenv.config(); \n\nconst ${modelName}Schema = new mongoose.Schema({}) \n\n\n\nmodule.exports = mongoose.model("${modelName}", ${modelName}Schema);`
   );
 };
 

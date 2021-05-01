@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import shelljs from "shelljs";
 
 /**
  * Creation of controllers Project folder with controller files
@@ -17,7 +16,13 @@ const createControllerFolderAndCD = async () => {
 };
 
 const createControllerFiles = async (controllerName) => {
-  await fs.writeFileSync(controllerName + ".js", "");
+  await fs.writeFileSync(
+    controllerName + ".js",
+    `// IMPORT PACKAGES TO BE USED HERE (TOP-LEVEL) \n\n// DEFINE CONTROLLER FUNCTIONS HERE \nmodule.exports ={
+      // defined controller functions goes here
+
+    }`
+  );
 };
 
 export { createControllerFolderAndCD, createControllerFiles };

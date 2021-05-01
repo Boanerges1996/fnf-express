@@ -32,9 +32,13 @@ import { promisify } from "util";
 
 import ncp from "ncp";
 import fs, { readFileSync, writeFileSync } from "fs";
-import { Spinner } from "cli-spinner";
+// import { Spinner } from "cli-spinner";
 import { helpFunction } from "./functions/help";
 import { installAndCreateDB } from "./functions/database";
+import {
+  createConnectionsFolderAndCD,
+  createConnectionFile,
+} from "./functions/connections";
 const access = promisify(fs.access);
 const copy = promisify(ncp);
 
@@ -54,9 +58,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       "--ctr": String,
       "--routes": String,
       "--views": String,
-      "--help": Boolean,
-      "--mfile": String, // For creating modelFile in  MongoDB
-      "-mf": "--mfile", // For creating modelFile in  MongoDB
+      "--help": Boolean, // For creating modelFile in  MongoDB
       "-g": "--git",
       "-y": "--yes",
       "-i": "--install",
@@ -83,15 +85,12 @@ function parseArgumentsIntoOptions(rawArgs) {
     controllers: args["--ctr"],
     routes: args["--routes"],
     help: args["--help"] || false,
-    mfile: args["--mfile"],
   };
 }
 
 async function promptForMissingOptions(options) {
-  const defaultTemplate = "JavaScript";
+  // const defaultTemplate = "JavaScript";
   const defaultDB = "MongoDB";
-
-  const questions = [];
 
   // Getting project name if it doesn't exist
   // PROJECT NAME
@@ -132,7 +131,7 @@ async function promptForMissingOptions(options) {
         type: "list",
         name: "database",
         message: "What is your preferred Database",
-        choices: ["MongoDB", "MySQL", "Postgres"],
+        choices: ["MongoDB"],
         default: defaultDB,
       },
     ]);
@@ -232,6 +231,9 @@ async function promptForMissingOptions(options) {
       });
     }
   }
+  await process.chdir("../");
+  await createConnectionsFolderAndCD();
+  await createConnectionFile();
 
   //  GIT
   if (!options.git) {
@@ -338,12 +340,28 @@ export async function cli(args) {
     helpFunction();
     return;
   } else {
-    if (options.mfile) {
+    if (options.models) {
       // For creating model file in model folder
       createModelFolderAndCD().then(() => {
-        createModelFileGivenName(options.mfile);
+        createModelFileGivenName(options.models);
       });
       return;
+    }
+
+    if (options.controllers) {
+      // For creating controller file
+      createControllerFolderAndCD().then(() => {
+        createControllerFiles(options.controllers);
+        return;
+      });
+    }
+
+    if (options.routes) {
+      // For ccreating route file
+      createRoutesFolderAndCD().then(() => {
+        createRoutesFiles(options.routes);
+        return;
+      });
     }
     // if help is not selected
     else {
@@ -352,7 +370,7 @@ export async function cli(args) {
   }
 
   // options = await promptForMissingOptions(options);
-  console.log(options);
+  // console.log(options);
   //   await createProject(options);
   //   await createtemplates(options);
 }
